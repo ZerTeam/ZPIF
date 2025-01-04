@@ -1,1 +1,1 @@
-# ZPIF
+This program is designed to handle the ZerProjectImagesFormat(zpif) file format. It is distributed under the MIT license.
