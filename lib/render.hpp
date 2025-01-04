@@ -47,8 +47,8 @@ short render(std::istream &file, Image &img, char *windowName, short &Error)
     cout << "\033[33mStart rendering\033[0m" << endl;
 
     sf::Image icon;
-    if (!icon.loadFromFile("logo_zpif.png")) { 
-        std::cerr << "Error 4: Failed to load icon!" << std::endl;
+    if (!icon.loadFromFile("./icon.png")) { 
+        std::cerr << "\033[1;31mError 4: Failed to load icon!\033[0m" << std::endl;
         return -4;
     }
 
