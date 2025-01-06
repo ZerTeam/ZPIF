@@ -78,7 +78,7 @@ std::string extractContent(const std::string& str, char startChar, char endChar)
 }
 
 // Функция парсинга параметров
-short parserParam(std::string &str, Image &img)
+char parserParam(std::string &str, Image &img)
 {
     str = toLowerCase(str); // Привод к нижнему регистру
     if (containsChar(str, '{') && containsChar(str, '}') && containsChar(str, '(') && containsChar(str, ')'))
@@ -119,10 +119,8 @@ short parserParam(std::string &str, Image &img)
 }
 
 // Функция парсинга пикселя
-short parserPixel(std::string &str, Image &img)
+char parserPixel(std::string &str, Image &img)
 {
-    str = toLowerCase(str);
-
     // Обработка строки с RGB
     if (containsChar(str, '[') && containsChar(str, ']') && img.randerStart) {
         std::string content = extractContent(str, '[', ']');
@@ -133,6 +131,7 @@ short parserPixel(std::string &str, Image &img)
             return -2;
         }
 
+        // Проверка для разжатия
         if (containsChar(str, '(') && containsChar(str, ')') && containsString(img.compression, "rle"))
         {
             std::string number = extractContent(str, '(', ')');
@@ -140,7 +139,10 @@ short parserPixel(std::string &str, Image &img)
             img.quantity--;
         }
 
-        if (sscanf(content.c_str(), "%hu %hu %hu", &img.rgb[0], &img.rgb[1], &img.rgb[2]) == 3) {
+        if (content.size() >= 3) {
+            img.rgb[0] = static_cast<u_int8_t>(content[0]);
+            img.rgb[1] = static_cast<u_int8_t>(content[1]);
+            img.rgb[2] = static_cast<u_int8_t>(content[2]);
             img.point++; // Инкремент только при успешном парсинге
             return 0;    // Продолжаем
         } else {

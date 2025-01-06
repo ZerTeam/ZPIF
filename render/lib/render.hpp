@@ -29,7 +29,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include "./class.hpp"
+#include "./classes.hpp"
 #include "./parser.hpp"
 
 // Функция рендера
@@ -119,7 +119,6 @@ short render(std::istream &file, Image &img, char *windowName, short &Error)
             // Парсинг пикселя
             Error = parserPixel(str, img);
             if (img.point<100)
-                cout << str << img.quantity << img.point << img.randerStart << endl;
 
             if (Error < 0)  return -1;
             if (Error == 1) break; // Завершение рендера

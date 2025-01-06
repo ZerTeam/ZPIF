@@ -29,6 +29,7 @@
 #include <SFML/Graphics.hpp>
 
 // Собственные библиотеки
+#include "./lib/classes.hpp"
 #include "./lib/render.hpp"
 #include "./lib/parser.hpp"
 
@@ -52,7 +53,7 @@ int main(int argc, char *argv[]) {
     Image img;// Данные изображения
 
     // Открытие файла
-    std::ifstream file{filePath};
+    std::ifstream file{filePath, std::ios::binary};
 
     // Проверка на открытие файла
     if (!file.is_open()) {
