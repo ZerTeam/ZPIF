@@ -70,7 +70,7 @@ Commands are written using the `@@` format and define the structure of image dat
 @end@
 ```
 
-## Example 2: ZPIF File (When Opened as Text)
+## Example 2: ZPIF File (Textual representation)
 
 ```zpif
 {f} (zpifv1)
@@ -161,7 +161,7 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 @end@
 ```
 
-## Пример 2 файла ZPIF(если открыть как текст):
+## Пример 2 файла ZPIF(в текстовом представлении):
 
 ```zpif
 {f} (zpifv1)
