@@ -1,6 +1,6 @@
 ![Logo](images/ZPIF.png "Logo ZPIF")
 
-# English (translation)
+**English (translation)**
 
 # ZPIF File Format Description
 
@@ -90,7 +90,7 @@ Commands are written in the `@@` format and define the image data structure:
 
 1. Parameters and commands can be abbreviated to their first letter (except for `data_unix`, which is abbreviated as `u`).
 
-# Русский (original)
+**Русский (original)**
 
 # Описание формата файла ZPIF
 
