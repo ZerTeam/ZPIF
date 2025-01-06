@@ -29,8 +29,8 @@
 #include <SFML/Graphics.hpp>
 
 // Собственные библиотеки
-#include "../lib/render.hpp"
-#include "../lib/parser.hpp"
+#include "./lib/render.hpp"
+#include "./lib/parser.hpp"
 
 // Добавления в область видемости
 using std::cout;
@@ -63,11 +63,8 @@ int main(int argc, char *argv[]) {
     // Парсинг параметров из файла
     while (getline(file, line))
     {
-        // Обрезание пробельных символов
-        line = trim(line);
-
-        // Пропуск комментариев и пустых строк.
-        if (line[0]==';'||line[0]=='\n'||line.empty()) continue;
+        // Пропуск пустых строк.
+        if (line[0]=='\n'||line.empty()) continue;
 
         // Вызов парсера на текущей строке
         Error = parserParam(line, img);
