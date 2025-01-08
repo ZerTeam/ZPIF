@@ -93,7 +93,7 @@ Commands are written using the `@@` format and define the structure of image dat
 
 **Русский (original)**
 
-# Описание формата файла ZPIF
+# Описание формата файлов ZPIF
 
 ZPIF (ZerProjectImageFormat) - это растровый формат хранения графической информации.
 
