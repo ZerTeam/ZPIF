@@ -28,6 +28,8 @@
 #include <string>
 
 typedef unsigned short u_short;
+typedef unsigned short u_int;
+typedef unsigned char u_int8_t;
 
 // Класс изображения
 class Image
@@ -35,7 +37,7 @@ class Image
 public:
     std::string format{""}; // Фармат изображения
     std::string mode{"rgb"}; // Режим отображения цвета например rgb
-    std::string compression{""}; // Сжатие
+    std::string compression{"0"}; // Сжатие
     u_short width{0}; // Ширина изображения
     u_short height{0}; // Высота изображения
     u_int quantity; // Количество под ряд (для сжатых изображений)
