@@ -2,30 +2,31 @@
 
 **English (translation)**
 
-# ZPIF File Format Description
+# Description of the ZPIF File Format
 
-ZPIF (ZerProjectImageFormat) is a raster format for storing graphical data.
+ZPIF (ZerProjectImageFormat) is a raster format for storing graphical information.
 
 ## Format Structure
 
-The file consists of two main parts:
+The file consists of three main parts:
 
-1. **Image Parameters**: Define the main properties of the file.
-2. **Commands**: Indicate the start of pixel data and the end of the file.
+1. **Image Parameters**: Define the basic properties of the file.
+2. **Commands**: Mark the beginning of pixel data and the end of the file.
+3. **Pixel Data**: Store the colors of the pixels.
 
 ## Image Parameters
 
-Parameters are enclosed in curly braces `{}`. Each parameter has a name and a value. The value is specified in parentheses `()`, where the name indicates the parameter type, and the value contains its content.
+Parameters are enclosed in curly braces `{}`. Each parameter has a name and a value. The value is written in parentheses `()`, where the name specifies the parameter type, and the value specifies its content.
 
 ### Supported Parameters
 
 #### Mandatory Parameters:
 
-- `{format} (ZPIFv1)` - File format. Specifies the type of image.
+- `{format} (ZPIFv1)` - File format. Specifies the image type.
 - `{mode} (RGB)` - Display mode. Currently, only RGB is supported.
 - `{width} (1920)` - Image width in pixels.
 - `{height} (1080)` - Image height in pixels.
-- `{compression} (RLE)` - Compression method. If absent, the default value is `0`. Currently, only RLE is supported.
+- `{compression} (RLE)` - Compression method. If omitted, the default value is `0`. Currently, only RLE is supported.
 
 #### Optional Parameters:
 
@@ -35,24 +36,24 @@ Parameters are enclosed in curly braces `{}`. Each parameter has a name and a va
 
 ## Commands
 
-Commands are written using the `@@` format and define the structure of image data:
+Commands are written in the format `@@` and define the structure of the image data:
 
 - `@start@` - Marks the beginning of pixel data.
 - `@end@` - Marks the end of the file.
 
 ## Writing Order
 
-1. Image parameters are written first in any order.
-2. The `@start@` command follows, indicating the start of pixel data.
-3. The file ends with the `@end@` command.
+1. Image parameters are written first, in any order.
+2. After the parameters, the `@start@` command indicates the beginning of pixel data.
+3. The `@end@` command is written at the end of the file.
 
 ## Pixel Data
 
-- Pixels are recorded in the `[RGB]` format (each letter represents 1 byte of color), where values indicate the intensity of RGB colors.
-- When using RLE compression, parentheses `()` may precede a pixel description, specifying the number of repeating pixels. Example: `(10)[255 0 0]` means 10 consecutive red pixels.
+- Pixels are written in the format `[RGB]` (each letter represents 1 byte of color), where the values represent the intensities of the RGB colors.
+- When using RLE compression, parentheses `()` may precede the pixel description, containing the count of repeated pixels. Example: `(10)[255 0 0]` means 10 consecutive red pixels.
 - Pixels are written from left to right, top to bottom.
 
-## Example 1: ZPIF File (Binary Representation)
+## Example 1 of a ZPIF File (Binary Representation):
 
 ```zpif
 {format} (zpifv1)
@@ -70,7 +71,7 @@ Commands are written using the `@@` format and define the structure of image dat
 @end@
 ```
 
-## Example 2: ZPIF File (Textual representation)
+## Example 2 of a ZPIF File (Text Representation):
 
 ```zpif
 {f} (zpifv1)
@@ -88,7 +89,8 @@ Commands are written using the `@@` format and define the structure of image dat
 
 ## Notes
 
-1. Parameters and commands have single-letter abbreviations (except for `data_unix`, which is abbreviated as `u`).
+1. Parameters and commands have abbreviations down to the first letter (except `data_unix`, which is abbreviated as `u`).
+
 
 
 **Русский (original)**
@@ -99,10 +101,11 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 
 ## Структура формата
 
-Файл состоит из двух основных частей:
+Файл состоит из трёх основных частей:
 
 1. **Параметры изображения**: задают основные свойства файла.
 2. **Команды**: определяют начало данных пикселей и окончание файла.
+3. **Данные о пикселях**: данные хранящие цвета пикселей.
 
 ## Параметры изображения
 
