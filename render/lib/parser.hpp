@@ -21,8 +21,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  
     SOFTWARE.
 */
-#ifndef _PARSER_H_
-#define _PARSER_H_
+#ifndef _PARSER_HPP_
+#define _PARSER_HPP_
 
 // Библиотеки
 #include <string>
@@ -34,16 +34,21 @@
 // npos
 #define NPOS std::string::npos
 
-// Добавления в область видемости
+// Объявления типов
+typedef unsigned short u_short;
+typedef unsigned char u_int8_t;
+
+// Добавления в область видимости
 using std::cout;
 using std::cerr;
 using std::endl;
 
-// Функция для проверки существования заданого символа в строке
+// Функция для проверки существования заданного символа в строке
 bool containsChar(const std::string& str, char ch) {
     return str.find(ch) != NPOS;
 }
 
+// Функция для проверки существования заданного текста в строке
 bool containsString(const std::string& str, const std::string& text) {
     return str.find(text) != NPOS;
 }
@@ -57,7 +62,7 @@ std::string toLowerCase(const std::string& input) {
     return result;
 }
 
-// Функция для получения такста из заданных символов 
+// Функция для получения текста из заданных символов 
 std::string extractContent(const std::string& str, char startChar, char endChar) {
     std::string result;
     size_t start = 0;
@@ -86,17 +91,15 @@ char parserParam(std::string &str, Image &img)
         // Создания объекта и присвоения значений
         Parameter param{extractContent(str, '{', '}'), extractContent(str, '(', ')')};
         // Получения данных
-        if (containsString(param.getName(), "f"))
-            img.format=param.getValue();
-        if (containsString(param.getName(), "m"))
-            img.mode=param.getValue();
-        if (containsString(param.getName(), "c"))
-            img.compression=param.getValue();
+        if (param.getName()[0] == 'm')
+            img.mode = param.getValue();
+        else if (param.getName()[0] == 'c')
+            img.compression = param.getValue();
         // Получения размеров
-        if (containsString(param.getName(), "w"))
-            img.width=std::strtoul((param.getValue().data()), nullptr, 10);
-        if (containsString(param.getName(), "h"))
-            img.height=std::strtoul((param.getValue().data()), nullptr, 10);
+        else if (param.getName()[0] == 'w')
+            img.width = std::strtoul((param.getValue().data()), nullptr, 10);
+        else if (param.getName()[0] == 'h')
+            img.height = std::strtoul((param.getValue().data()), nullptr, 10);
     }
     
     else if (containsString(str, "@s@"))
@@ -107,7 +110,7 @@ char parserParam(std::string &str, Image &img)
             return -2;
         }
             
-        img.randerStart = true;
+        img.renderStart = true;
         return 1;
     }
 
@@ -122,7 +125,7 @@ char parserParam(std::string &str, Image &img)
 char parserPixel(std::string &str, Image &img)
 {
     // Обработка строки с RGB
-    if (containsChar(str, '[') && containsChar(str, ']') && img.randerStart) {
+    if (containsChar(str, '[') && containsChar(str, ']') && img.renderStart) {
         std::string content = extractContent(str, '[', ']');
 
         if (containsChar(str, '(') && containsChar(str, ')') && containsString(img.compression, "0"))
@@ -154,7 +157,7 @@ char parserPixel(std::string &str, Image &img)
     // Обработка команды @END@
     if (containsString(str, "@e@")) {
         std::cout << "\033[32mRendering completed\033[0m" << std::endl;
-        img.randerStart = false;
+        img.renderStart = false;
         // Проверка на равенства
         if(img.point + img.quantity < img.width * img.height) cout << "\033[1;33mWARNING: Number of pixels is less than required\033[0m" << endl;
         return 1; // Завершаем
