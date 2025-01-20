@@ -38,14 +38,14 @@ Parameters are enclosed in curly braces `{}`. Each parameter has a name and a va
 
 Commands are written in the format `@@` and define the structure of the image data:
 
-- `@start@` - Marks the beginning of pixel data.
-- `@end@` - Marks the end of the file.
+- `@s@` - Marks the beginning of pixel data.
+- `@e@` - Marks the end of the file.
 
 ## Writing Order
 
 1. Image parameters are written first, in any order.
-2. After the parameters, the `@start@` command indicates the beginning of pixel data.
-3. The `@end@` command is written at the end of the file.
+2. After the parameters, the `@s@` command indicates the beginning of pixel data.
+3. The `@e@` command is written at the end of the file.
 
 ## Pixel Data
 
@@ -88,9 +88,7 @@ Commands are written in the format `@@` and define the structure of the image da
 ```
 
 ## Notes
-
-1. Parameters and commands have abbreviations down to the first letter (except `data_unix`, which is abbreviated as `u`).
-
+1. Parameters have abbreviations up to the first letter (except `data_unix`, its abbreviation is `u`).
 
 
 **Русский (original)**
@@ -131,14 +129,14 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 
 Команды записываются в формате `@@` и определяют структуру данных изображения:
 
-- `@start@` - Определяет начало данных пикселей.
-- `@end@` - Определяет конец файла.
+- `@s@` - Определяет начало данных пикселей.
+- `@e@` - Определяет конец файла.
 
 ## Порядок записи
 
 1. Сначала записываются параметры изображения в произвольном порядке.
-2. После параметров идёт команда `@start@`, указывающая на начало данных пикселей.
-3. В конце файла записывается команда `@end@`.
+2. После параметров идёт команда `@s@`, указывающая на начало данных пикселей.
+3. В конце файла записывается команда `@e@`.
 
 ## Данные пикселей
 
@@ -182,4 +180,4 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 
 ## Примечания
 
-1. У параметров и команд есть сокращения до одной первой буквы (кроме `data_unix`, его сокращение — `u`).
+1. У параметров есть сокращения до одной первой буквы (кроме `data_unix`, его сокращение — `u`).
