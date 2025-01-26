@@ -2,62 +2,63 @@
 
 **English (translation)**
 
-# Description of the ZPIF File Format
+# ZPIF File Format Description
 
 ZPIF (ZerProjectImageFormat) is a raster format for storing graphical information.
 
 ## Format Structure
 
-The file consists of three main parts:
+A file consists of three main parts:
 
-1. **Image Parameters**: Define the basic properties of the file.
-2. **Commands**: Mark the beginning of pixel data and the end of the file.
-3. **Pixel Data**: Store the colors of the pixels.
+1. **Image Parameters**: Define the main properties of the file.
+2. **Commands**: Specify the start of pixel data and the end of the file.
+3. **Pixel Data**: Contain the colors of the pixels.
+
+## File Start
+
+The first line of the file contains `DD A5 50 49 46` in binary representation or `�ZPIF` in text. This indicates to programs that the file is in the ZPIF format.
 
 ## Image Parameters
 
-Parameters are enclosed in curly braces `{}`. Each parameter has a name and a value. The value is written in parentheses `()`, where the name specifies the parameter type, and the value specifies its content.
+Parameters are enclosed in curly braces `{}`. Each parameter has a name and a value. The value is enclosed in parentheses `()`, where the name defines the parameter type, and the value provides its content.
 
 ### Supported Parameters
 
-#### Mandatory Parameters:
+#### Mandatory Parameters
 
-- `{format} (ZPIFv1)` - File format. Specifies the image type.
-- `{mode} (RGB)` - Display mode. Currently, only RGB is supported.
-- `{width} (1920)` - Image width in pixels.
-- `{height} (1080)` - Image height in pixels.
-- `{compression} (RLE)` - Compression method. If omitted, the default value is `0`. Currently, only RLE is supported.
+- `{width} (1920)` - The width of the image in pixels.
+- `{height} (1080)` - The height of the image in pixels.
+- `{compression} (RLE)` - The compression method. If absent, the default value is `0`. Currently, only RLE is supported.
 
-#### Optional Parameters:
+#### Optional Parameters
 
-- `{data} (2025-01-04)` - File creation date.
-- `{time} (14:30:00)` - File creation time.
-- `{data_unix} (1735691400)` - Date and time in UNIX format.
+- `{data} (2025-01-04)` - The file creation date.
+- `{time} (14:30:00)` - The file creation time.
+- `{data_unix} (1735691400)` - The date and time in UNIX format.
 
 ## Commands
 
 Commands are written in the format `@@` and define the structure of the image data:
 
-- `@s@` - Marks the beginning of pixel data.
+- `@s@` - Marks the start of pixel data.
 - `@e@` - Marks the end of the file.
 
-## Writing Order
+## Recording Order
 
-1. Image parameters are written first, in any order.
-2. After the parameters, the `@s@` command indicates the beginning of pixel data.
-3. The `@e@` command is written at the end of the file.
+1. First, image parameters are recorded in any order.
+2. After the parameters, the `@s@` command indicates the start of pixel data.
+3. The file ends with the `@e@` command.
 
 ## Pixel Data
 
-- Pixels are written in the format `[RGB]` (each letter represents 1 byte of color), where the values represent the intensities of the RGB colors.
-- When using RLE compression, parentheses `()` may precede the pixel description, containing the count of repeated pixels. Example: `(10)[255 0 0]` means 10 consecutive red pixels.
-- Pixels are written from left to right, top to bottom.
+- Pixels are recorded in the format `[RGBA]` (each letter represents 1 byte of color), where the values represent the RGBA color intensities.
+- When using RLE compression, parentheses `()` can precede the pixel description to specify the number of repeating pixels. Example: `(10)[\xFF\x00\x00\xFF]` means 10 consecutive red pixels.
+- Pixels are recorded from left to right, top to bottom.
 
-## Example 1 of a ZPIF File (Binary Representation):
+## Example 1 of a ZPIF File (Binary Representation)
 
 ```zpif
-{format} (zpifv1)
-{mode} (rgb)
+\xDDZPIF
 {width} (4)
 {height} (2)
 {compression} (RLE)
@@ -65,30 +66,31 @@ Commands are written in the format `@@` and define the structure of the image da
 {time} (14:30:00)
 {data_unix} (1735691400)
 @start@
-(5) [\xFF\x80\x40]
-[\xFF\xFF\x40]
-(2) [\xFF\x80\x41]
+(5) [\xFF\x80\x40\xFF]
+[\xFF\xFF\x40\xFF]
+(2) [\xFF\x80\x41\xFF]
 @end@
 ```
 
-## Example 2 of a ZPIF File (Text Representation):
+## Example 2 of a ZPIF File (Text Representation)
 
 ```zpif
-{f} (zpifv1)
-{m} (rgb)
+�ZPIF
 {w} (2)
 {h} (2)
 {c} (0)
 @s@
 [���]
-[���]
-[��1]
-[�<1]
+[����]
+[��1�]
+[��1�]
 @e@
 ```
 
 ## Notes
-1. Parameters have abbreviations up to the first letter (except `data_unix`, its abbreviation is `u`).
+
+1. Parameters can be abbreviated to their first letter (except for `data_unix`, whose abbreviation is `u`).
+
 
 
 **Русский (original)**
@@ -103,23 +105,25 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 
 1. **Параметры изображения**: задают основные свойства файла.
 2. **Команды**: определяют начало данных пикселей и окончание файла.
-3. **Данные о пикселях**: данные хранящие цвета пикселей.
+3. **Данные о пикселях**: данные, хранящие цвета пикселей.
+
+## Начало файла
+
+Первая строка файла содержит `DD A5 50 49 46` в бинарном представлении или же `�ZPIF` в текстовом. Это говорит программам, что это файл в формате ZPIF.
 
 ## Параметры изображения
 
-Параметры записываются в фигурных скобках `{}`. Каждый параметр имеет имя и значение. Значение записывается в круглых скобках `()`, где имя задаёт тип параметра, а значение его содержание. 
+Параметры записываются в фигурных скобках `{}`. Каждый параметр имеет имя и значение. Значение записывается в круглых скобках `()`, где имя задаёт тип параметра, а значение — его содержание. 
 
 ### Поддерживаются следующие параметры
 
-#### Обязательные параметры:
+#### Обязательные параметры
 
-- `{format} (ZPIFv1)` - Формат файла. Указывает тип изображения.
-- `{mode} (RGB)` - Режим отображения. Поддерживается пока только RGB.
 - `{width} (1920)` - Ширина изображения в пикселях.
 - `{height} (1080)` - Высота изображения в пикселях.
 - `{compression} (RLE)` - Метод сжатия. Если отсутствует, значение по умолчанию — `0`. Поддерживается пока только RLE.
 
-#### Необязательные параметры:
+#### Необязательные параметры
 
 - `{data} (2025-01-04)` - Дата создания файла.
 - `{time} (14:30:00)` - Время создания файла.
@@ -140,15 +144,14 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 
 ## Данные пикселей
 
-- Пиксели записываются в формате `[RGB]`(каждая буква это 1 байт цвета), где значения представляют интенсивности цветов RGB.
-- При использовании сжатия RLE перед описанием пикселя могут использоваться круглые скобки `()`, содержащие количество повторяющихся пикселей. Пример: `(10)[255 0 0]` означает 10 красных пикселей подряд.
+- Пиксели записываются в формате `[RGBA]` (каждая буква — это 1 байт цвета), где значения представляют интенсивности цветов RGBA.
+- При использовании сжатия RLE перед описанием пикселя могут использоваться круглые скобки `()`, содержащие количество повторяющихся пикселей. Пример: `(10)[\xFF\x00\x00\xFF]` означает 10 красных пикселей подряд.
 - Пиксели записываются слева направо, сверху вниз.
 
-## Пример 1 файла ZPIF(в бинарном предстовлении):
+## Пример 1 файла ZPIF (в бинарном представлении)
 
 ```zpif
-{format} (zpifv1)
-{mode} (rgb)
+\xDDZPIF
 {width} (4)
 {height} (2)
 {compression} (RLE)
@@ -156,25 +159,24 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 {time} (14:30:00)
 {data_unix} (1735691400)
 @start@
-(5) [\xFF\x80\x40]
-[\xFF\xFF\x40]
-(2) [\xFF\x80\x41]
+(5) [\xFF\x80\x40\xFF]
+[\xFF\xFF\x40\xFF]
+(2) [\xFF\x80\x41\xFF]
 @end@
 ```
 
-## Пример 2 файла ZPIF(в текстовом представлении):
+## Пример 2 файла ZPIF (в текстовом представлении)
 
 ```zpif
-{f} (zpifv1)
-{m} (rgb)
+�ZPIF
 {w} (2)
 {h} (2)
 {c} (0)
 @s@
 [���]
-[���]
-[��1]
-[�<1]
+[����]
+[��1�]
+[��1�]
 @e@
 ```
 
