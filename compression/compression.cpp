@@ -63,6 +63,8 @@ void compress_rle(std::ifstream &input_file, std::ofstream &output_file) {
     int count = 1;
     bool header_written = false;
 
+    output_file << '\xDD' << "ZPIF\n";
+
     while (std::getline(input_file, line)) {
         line = toLowerCase(line);
 
@@ -75,10 +77,6 @@ void compress_rle(std::ifstream &input_file, std::ofstream &output_file) {
             
             if (line.find("{compression}") != NPOS || line.find("{c}") != NPOS) 
                 output_file << "{c}(rle)\n";
-             else if (line.find("{format}") != NPOS || line.find("{f}") != NPOS) 
-                output_file << "{f}(" << data << ")\n";
-             else if (line.find("{mode}") != NPOS || line.find("{m}") != NPOS) 
-                output_file << "{m}(" << data << ")\n";
              else if (line.find("{width}") != NPOS || line.find("{w}") != NPOS)
                 output_file << "{w}(" << data << ")\n";
              else if (line.find("{height}") != NPOS || line.find("{h}") != NPOS)
@@ -128,7 +126,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    std::ifstream input_file(argv[1]);
+    std::ifstream input_file(argv[1], std::ios::binary);
     std::ofstream output_file(argv[2], std::ios::binary);
     if (!input_file||!output_file) {
         std::cerr << "Error opening input file\n";
