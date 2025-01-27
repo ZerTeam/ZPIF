@@ -65,11 +65,11 @@ Commands are written in the format `@@` and define the structure of the image da
 {data} (2025-01-04)
 {time} (14:30:00)
 {data_unix} (1735691400)
-@start@
+@s@
 (5) [\xFF\x80\x40\xFF]
 [\xFF\xFF\x40\xFF]
 (2) [\xFF\x80\x41\xFF]
-@end@
+@e@
 ```
 
 ## Example 2 of a ZPIF File (Text Representation)
@@ -158,11 +158,11 @@ ZPIF (ZerProjectImageFormat) - это растровый формат хране
 {data} (2025-01-04)
 {time} (14:30:00)
 {data_unix} (1735691400)
-@start@
+@s@
 (5) [\xFF\x80\x40\xFF]
 [\xFF\xFF\x40\xFF]
 (2) [\xFF\x80\x41\xFF]
-@end@
+@e@
 ```
 
 ## Пример 2 файла ZPIF (в текстовом представлении)
