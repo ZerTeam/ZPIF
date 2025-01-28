@@ -1,7 +1,7 @@
 ![Logo](images/ZPIF.png "Logo ZPIF")
 
 > [!WARNING]
-> Test
+> This project is suspended due to improvements. We do not recommend working with it now.
 
 **English (translation)**
 
