@@ -26,11 +26,10 @@
 #define _PARSER_HPP_
 
 // Библиотеки
-#include <string>
-#include <algorithm>
 #include <iostream>
 #include <fstream>
-#include <cctype>
+#include <string>
+//   Собственные
 #include "classes.hpp"
 
 // npos
@@ -38,111 +37,73 @@
 
 // Объявления типов
 typedef unsigned short u_short;
-typedef unsigned char u_int8_t;
+typedef unsigned char  u_int8_t;
 
 // Добавления в область видимости
 using std::cerr;
 using std::cout;
 using std::endl;
 
-// Функция для проверки существования заданного символа в строке
-bool containsChar(const std::string &str, char ch)
+// Функция для чтения unsigned short из файла в формате big-endian
+inline unsigned short convertBEInNumber(const u_int8_t &byteBig, const u_int8_t &byteLittle)
 {
-    return str.find(ch) != NPOS;
-}
-
-// Функция для проверки существования заданного текста в строке
-bool containsString(const std::string &str, const std::string &text)
-{
-    return str.find(text) != NPOS;
-}
-
-// Функция для перевода текса в строке к нижнему регистру
-std::string toLowerCase(const std::string &input)
-{
-    std::string result;
-    for (char c : input)
-    {
-        result += std::tolower(c);
-    }
-    return result;
+    // Объединение байтов в число (big-endian)
+    return (byteBig << 8) | byteLittle;
 }
 
 // Функция для получения текста из заданных символов
-std::string extractContent(const std::string &str, char startChar, char endChar)
-{
-    std::string result;
-    size_t start = 0;
-
-    while ((start = str.find(startChar, start)) != NPOS)
-    {
-        size_t end = str.find(endChar, start + 1);
-        if (end != NPOS)
-        {
-            if (!result.empty())
-            {
-                break;
-            }
-            result += str.substr(start + 1, end - start - 1);
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    return result;
+std::string extractContent(const std::string &str, char startChar, char endChar) {
+    size_t start = str.find(startChar);
+    if (start == NPOS) return "";
+    size_t end = str.find(endChar, start + 1);
+    return (end != NPOS) ? str.substr(start + 1, end - start - 1) : "";
 }
 
 // Функция парсинга параметров
 signed char parserParams(Image &img, const std::string &filepath)
 {
-    std::string str;
+    std::string str; // Строка для записи данных из файла
+    std::ifstream file{filepath, std::ios::binary}; // Файл для чтения
 
-    std::ifstream file{filepath};
-
+    // Чтение первой строки
     getline(file, str);
 
+    // Проверка заголовка
     if (str != "\xDDZPIF")
     {
         cerr << "\033[1;31mError 1: The file is damaged or the format is not supported.\033[0m" << std::endl;
         return -1;
     }
-    
 
     // Парсинг параметров из файла
     while (getline(file, str))
     {
-        // Пропуск комментариев и пустых строк.
+        // Пропуск пустых строк.
         if (str[0] == '\n' || str.empty())
             continue;
 
         // Парсинг из строки
-        str = toLowerCase(str); // Привод к нижнему регистру
-        
-        if (containsChar(str, '{') && containsChar(str, '}') && containsChar(str, '(') && containsChar(str, ')'))
+        if (str.find('{') != NPOS && str.find('}') != NPOS && str.find('(') != NPOS && str.find(')') != NPOS)
         {
             // Создания объекта и присвоения значений
             Parameter param{extractContent(str, '{', '}'), extractContent(str, '(', ')')};
             // Получения данных
-            if (param.getName()[0] == 'c')
-                img.compression = param.getValue();
-            // Получения размеров
-            else if (param.getName()[0] == 'w')
+            //   Получения размеров
+            if (param.getName()[0] == 'w')
                 img.width = std::strtoul((param.getValue().data()), nullptr, 10);
             else if (param.getName()[0] == 'h')
                 img.height = std::strtoul((param.getValue().data()), nullptr, 10);
         }
 
-        else if (containsString(str, "@s@"))
+        else if (str.c_str() == std::string("\x00\x00\xFF\xFF\xFF\xFF"))
         {
-            if (img.compression == "" || img.width <= 0 || img.height <= 0)
+            if (img.width <= 0 || img.height <= 0)
             {
                 cerr << "\033[1;31mError 2: The file is damaged or the format is not supported.\033[0m" << std::endl;
                 return -2;
             }
 
-            img.renderStart = true;
+            img.renderStart = file.tellg();
             return 1;
         }
 
@@ -158,60 +119,18 @@ signed char parserParams(Image &img, const std::string &filepath)
 }
 
 // Функция парсинга пикселя
-signed char parserPixel(std::string &str, Image &img)
-{
-    // Обработка строки с RGB
-    if (containsChar(str, '[') && containsChar(str, ']') && img.renderStart)
-    {
-        std::string content = extractContent(str, '[', ']');
-
-        if (containsChar(str, '(') && containsChar(str, ')') && containsString(img.compression, "0"))
-        {
-            cerr << "\033[1;31mError 2: The file is damaged or the format is not supported.\033[0m" << endl;
-            return -2;
-        }
-
-        // Проверка для разжатия
-        if (containsChar(str, '(') && containsChar(str, ')') && containsString(img.compression, "rle"))
-        {
-            std::string number = extractContent(str, '(', ')');
-            sscanf(number.c_str(), "%d", &img.quantity);
-            img.quantity--;
-        }
-
-        if (content.size() >= 4)
-        {
-            img.rgba[0] = static_cast<u_int8_t>(content[0]);
-            img.rgba[1] = static_cast<u_int8_t>(content[1]);
-            img.rgba[2] = static_cast<u_int8_t>(content[2]);
-            img.rgba[3] = static_cast<u_int8_t>(content[3]);
-            img.point++; // Инкремент только при успешном парсинге
-            return 0;    // Продолжаем
-        }
-        else
-        {
-            cerr << "\033[1;31mError 2: The file is damaged or the format is not supported.\033[0m" << endl;
-            return -2;
-        }
-    }
-
-    // Обработка команды @END@
-    else if (containsString(str, "@e@"))
-    {
-        std::cout << "\033[32mRendering completed\033[0m" << std::endl;
-        img.renderStart = false;
-        // Проверка на равенства
-        if (img.point + img.quantity < img.width * img.height)
-            cout << "\033[1;33mWARNING: Number of pixels is less than required\033[0m" << endl;
-        return 1; // Завершаем
-    }
-
-    // Ошибка
-    else
+signed char parserPixel(const std::vector<u_int8_t> &buffer, Image &img) {
+    if (buffer.size() != 6)
     {
         cerr << "\033[1;31mError 2: The file is damaged or the format is not supported.\033[0m" << endl;
         return -2;
     }
+    if (buffer == std::vector<u_int8_t>(6, 0x00)) return 1;
+
+    // Количество пикселей подряд
+    img.quantity = convertBEInNumber(buffer[0], buffer[1]);
+    // Запись цвета пикселя
+    std::copy(buffer.begin() + 2, buffer.begin() + 6, img.rgba);
 
     return 0;
 }

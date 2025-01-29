@@ -35,16 +35,19 @@
 // Функция рендера
 short render(const std::string &filePath, Image &img, char *windowName)
 {
-    // Объекты
+    // Объявление
     std::string str;
     std::ifstream file{filePath, std::ios::binary};
     u_char factor{1};
-    short Error{0};
+    std::vector<u_int8_t> buffer(6);
+    char Error{0};
 
-    if (img.width <= 200 && img.height <= 200)
-        factor = 3; // Коэффициент уменьшения
+    if (img.width < 10 && img.height < 10)
+        factor = 100; // Коэффициент уменьшения
     else if (img.width < 20 && img.height < 20)
         factor = 50; // Коэффициент уменьшения
+    else if (img.width <= 200 && img.height <= 200)
+        factor = 3; // Коэффициент уменьшения
 
     cout << "\033[33mStart rendering\033[0m" << endl;
 
@@ -58,7 +61,7 @@ short render(const std::string &filePath, Image &img, char *windowName)
 
     // Создания изображение и текстуры
     sf::Image image;
-    image.create(img.width, img.height, sf::Color::Cyan); // Изображение
+    image.create(img.width, img.height, sf::Color::Transparent); // Изображение
 
     sf::Texture texture;
     texture.loadFromImage(image); // Загрузка изображение в текстуру
@@ -66,23 +69,21 @@ short render(const std::string &filePath, Image &img, char *windowName)
     // Создания спрайта для отображения текстуры
     sf::Sprite sprite(texture);
 
-    while (getline(file, str))
-        if (str == "@s@") break;
+    file.seekg(img.renderStart);
 
     // Парсинг и заполнения пикселя
-    while (getline(file, str))
+    while (file.read(reinterpret_cast<char *>(buffer.data()), buffer.size()))
     {
-        // Пропускаем пустые строки и комментарии
-        if (str.empty() || str[0] == '\n')
-            continue;
-
         // Парсинг пикселя
-        Error = parserPixel(str, img);
-        if (Error < 0)
-                return -1;
+        Error = parserPixel(buffer, img);
 
+        // Завершение рендера
+        //   Ошибки
+        if (Error < 0)
+            return -1;
+        //   Конец файла
         if (Error == 1)
-            break; // Завершение рендера
+            break; 
 
         // Проверка на равенства
         if (img.point > img.width * img.height)
@@ -92,21 +93,20 @@ short render(const std::string &filePath, Image &img, char *windowName)
         sf::Color color(img.rgba[0], img.rgba[1], img.rgba[2], img.rgba[3]);
 
         // Обработка сжатия
-        if (img.quantity > 0 && containsString(img.compression, "rle"))
+        if (img.quantity > 0)
         {
-            while (img.quantity > 0 && (img.point < img.width * img.height))
+            while (img.quantity > 0 && (img.point <= img.width * img.height))
             {
-                image.setPixel(((img.point - 1) % img.width), ((img.point - 1) / img.width), color);
+                image.setPixel((img.point % img.width), (img.point / img.width), color);
                 img.quantity--;
                 img.point++;
             }
         }
-        // Заполнения пикселя
-        image.setPixel(((img.point - 1) % img.width), ((img.point - 1) / img.width), color);
-        // Проверка на равенства
+        // Проверка на на равенства
         if (img.point + img.quantity > img.width * img.height)
             cout << "\033[1;33mWARNING: Number of pixels exceeds available\033[0m" << endl;
     }
+
     // Обновления текстуру из изменённого изображения
     texture.update(image);
 

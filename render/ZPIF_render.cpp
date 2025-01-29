@@ -22,6 +22,18 @@
     SOFTWARE.
 */
 
+////////////////////////////////////////////////////////////////
+///                       GCC   14.2.1                       ///
+///                        SFML 2.6.2                        ///
+///                         C++   20                         ///
+////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////
+///                        ID: HM0100                        ///
+///                     Date: 2025-01-30                     ///
+///                     Author: Zer Team                     ///
+////////////////////////////////////////////////////////////////
+
 // Библиотеки
 #include <iostream>
 #include <string>
@@ -40,25 +52,21 @@ using std::endl;
 // Главная функция
 int main(int argc, char *argv[])
 {
-    if (argc<2)
+    if (argc < 2)
     {
         cerr << "\033[33mUsage: " << argv[0] << " <file_path>\033[0m" << endl;
         return 1;
     }
        
     // Переменные и тд
-    std::string filePath{argv[1]};
-    std::string line; // Строка для парсинга
-    Image img;// Данные изображения
+    std::string filepath{argv[1]};
+    Image img; // Данные изображения
 
     // Парсинг параметров из файла
-    if (parserParams(img, filePath) < 0) return 1;
+    if (parserParams(img, filepath) < 0) return 1;
 
     // Рендер
-    if (render(filePath, img, filePath.data())) return 1;
+    if (render(filepath, img, filepath.data())) return 1;
 
     return 0;
 }
-/*
- ID: HM0100; Author: Zer Team; Date: 2025/01/01
-*/
