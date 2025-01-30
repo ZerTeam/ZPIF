@@ -62,12 +62,14 @@ Pixels are written from left to right, top to bottom.
 
 ### Example 1 (Binary Representation in Hex)
 
-```DD 5A 50 49 46 0A 7B 77 7D 28 32 29 0A 7B 28 32 29 0A 00 FF FF FF FF 0A 00 01 00 00 00 00 00 03 FF 00 00 FF 00 00 00 00 00 00
+```
+DD 5A 50 49 46 0A 7B 77 7D 28 32 29 0A 7B 28 32 29 0A 00 FF FF FF FF 0A 00 01 00 00 00 00 00 03 FF 00 00 FF 00 00 00 00 00 00
 ```
 
 ### Example 2 (Textual Representation, Null Bytes Replaced with `N`)
 
-```�ZPIF
+```
+�ZPIF
 {w}(2)
 {h}(2)
 NN����
