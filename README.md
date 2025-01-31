@@ -16,7 +16,7 @@ A ZPIF file consists of three main parts:
 
 ## File Header
 
-The first line of the file contains the signature `DD A5 50 49 46` in hex (binary representation) or the textual representation `�ZPIF`. This allows programs to identify the file as ZPIF.
+The first line of the file contains the signature `DD 5A 50 49 46` in hex (binary representation) or the textual representation `�ZPIF`. This allows programs to identify the file as ZPIF.
 
 ## Image Parameters
 
@@ -98,7 +98,7 @@ ZPIF (ZerProjectImageFormat) — это растровый формат хран
 
 ## Начало файла
 
-Первая строка файла содержит сигнатуру `DD A5 50 49 46` в hex (бинарном представлении) или текстовое представление `�ZPIF`. Это позволяет программам идентифицировать файл как ZPIF.
+Первая строка файла содержит сигнатуру `DD 5A 50 49 46` в hex (бинарном представлении) или текстовое представление `�ZPIF`. Это позволяет программам идентифицировать файл как ZPIF.
 
 ## Параметры изображения
 
